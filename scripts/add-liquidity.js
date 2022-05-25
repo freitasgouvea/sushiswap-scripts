@@ -31,6 +31,21 @@ async function runAddLiquidity () {
   try {
     console.log('[add-liquidity] start')
 
+    if (!sushiswapAddress) {
+      console.log('[add-liquidity] error: SUSHI_SWAP_ADDRESS null')
+      return
+    }
+
+    if (!tokenAAddress) {
+      console.log('[add-liquidity] error: TOKEN_A_ADDRESS null')
+      return
+    }
+
+    if (!tokenBAddress) {
+      console.log('[add-liquidity] error: TOKEN_B_ADDRESS null')
+      return
+    }
+
     const walletJson = JSON.stringify(accountFile)
     const wallet = await ethers.Wallet.fromEncryptedJson(walletJson, password)
     const account = wallet.connect(provider)

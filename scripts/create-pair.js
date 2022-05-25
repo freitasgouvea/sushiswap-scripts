@@ -23,6 +23,21 @@ async function runCreatePair () {
   try {
     console.log('[create-pair] start')
 
+    if (!sushiFactoryAddress) {
+      console.log('[create-pair] error: SUSHI_FACTORY_ADDRESS null')
+      return
+    }
+
+    if (!tokenAAddress) {
+      console.log('[create-pair] error: TOKEN_A_ADDRESS null')
+      return
+    }
+
+    if (!tokenBAddress) {
+      console.log('[create-pair] error: TOKEN_B_ADDRESS null')
+      return
+    }
+
     const walletJson = JSON.stringify(accountFile)
     const wallet = await ethers.Wallet.fromEncryptedJson(walletJson, password)
     const account = wallet.connect(provider)
