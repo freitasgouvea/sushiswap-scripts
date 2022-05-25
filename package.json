@@ -1,0 +1,24 @@
+{
+  "name": "sushiswap-scripts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "create-pair": "node scripts/create-pair.js",
+    "deploy-erc20": "node scripts/deploy-erc20.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/freitasgouvea/sushiswap-scripts.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/freitasgouvea/sushiswap-scripts/issues"
+  },
+  "homepage": "https://github.com/freitasgouvea/sushiswap-scripts#readme",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "ethers": "^5.6.8"
+  }
+}
