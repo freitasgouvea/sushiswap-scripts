@@ -6,7 +6,9 @@
   "scripts": {
     "add-liquidity": "node scripts/add-liquidity.js",
     "create-pair": "node scripts/create-pair.js",
-    "deploy-erc20": "node scripts/deploy-erc20.js"
+    "deploy-erc20": "node scripts/deploy-erc20.js",
+    "deploy-minichief": "node scripts/deploy-minichief.js",
+    "add-pool": "node scripts/add-pool.js"
   },
   "repository": {
     "type": "git",

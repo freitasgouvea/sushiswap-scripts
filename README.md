@@ -2,10 +2,14 @@
 
 This repository contains `nodejs/ethers` scripts to execute Sushiswap smart contracts tasks.
 
-For more information about sushiswap smart contracts and their addresses in each network take a look at the protocol page:
+For more information about Sushiswap smart contracts and their addresses in each network take a look at the protocol page:
 
 - [Sushiswap Docs](https://docs.sushi.com/)
 - [Sushiswap Addresses](https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
+
+To access the smart contracts used by this repository:
+
+- [Sushiswap Smart Contracts](https://github.com/freitasgouvea/sushiswap/tree/test)
 
 ## How to use this repository
 
@@ -32,12 +36,15 @@ You can see all avaiable `.env` variables used for execute the scripts at `.env.
 
 > Before execute these scripts do not forget to add funds for your wallet.
 
-- Create Sushiswap Pair
-- Add Liquidity to Pair
-- Deploy and Mint ERC20 tokens
+* Create Sushiswap Pair
+* Add Liquidity to Pair
+* Deploy MinichiefV2 staking smart contract
+* Add Staking Pool to MinichiefV2
+* Deploy and Mint ERC20 tokens
 
+### Sushiswap Liquidity Pool and Swap
 
-### Create Pair
+#### Create Pair
 
 > This script create a Liquidity Pool of two ERC20 (token A and token B) executing `createPair()` function in `SushiV2Factory` smart contract. You can access the full code [here](https://mumbai.polygonscan.com/address/0xc35DADB65012eC5796536bD9864eD8773aBc74C4#code)
 
@@ -63,7 +70,7 @@ The hash of Create Pair transaction will be show in the output:
 [create-pair] done
 ```
 
-### Add Liquidity
+#### Add Liquidity
 
 > This script add liquidity to Pool of two ERC20 (token A and token B) executing `addLiquidity()` function in `SushiSwapRouter` smart contract. You can access the full code [here](https://mumbai.polygonscan.com/address/0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506#code) 
 
@@ -82,6 +89,12 @@ ADD_AMOUNT_MINIMUM_TOKEN_B=1000000000000000000000000
 ADD_LIQUIDITY_DEADLINE=//timestamp of deadline of liquidity supply in seconds
 ```
 
+And then run:
+
+```
+$ npm run add-liquidity
+```
+
 The hash of Add Liquidity transaction will be show in the output:
 
 ```
@@ -90,12 +103,63 @@ The hash of Add Liquidity transaction will be show in the output:
 [add-liquidity] sushiswap spend token B approved
 [add-liquidity] 0x6974a18d99BaDB190b73d3D8D1B7Dd955b718E7A X 0x3BC2e8BF8813d3ddA37C8774CFd9EC4e4878DAe5 add liquidity tx:  0xec58dc9f5b6841d78e692d172524a548b747dc7ee68ff8adb9ade58cd9628a13
 [add-liquidity] done
-
 ```
 
-### Deploy and mint ERC20
+### Sushiswap Staking and Reward
 
-> If you need to create fresh ERC20 tokens for test run this script that create a new ERC20 token called `SCT`. See source code [here](https://github.com/solid-world/solid-world-dao-contracts)
+#### Deploy Sushi Token and MinichiefV2
+
+> This script deploy `SushiToken` ERC20, `MinichiefV2` staking smart contract and transfer SushiToken ownership to MinichiefV2. Access the source code of [SushiToken](https://mumbai.polygonscan.com/address/0xD4Cf135a3C1bEdeB071a1db2e9baae1362222549#code) and [MinichiefV2](https://mumbai.polygonscan.com/address/0x69AE6689BE6E279eBFd4dAeC527a56C128005098#code) 
+
+To execute this script run:
+
+```
+$ npm run deploy-minichief
+```
+
+The addresses of both smart contracts will be show in the output:
+
+```
+[deploy-minichief] start
+[deploy-minichief] Sushi ERC20 token contract deployed address:  0xD4Cf135a3C1bEdeB071a1db2e9baae1362222549
+[deploy-minichief] Mini Chief V2 contract deployed address:  0x69AE6689BE6E279eBFd4dAeC527a56C128005098
+[deploy-minichief] Sushi ERC20 token ownership transfered tx: 0xd675c49c8ca8222158dcb1e8a6a9c6d5dd269eb45b5383b18234bc644f1e0f48
+[deploy-minichief] done
+```
+
+#### Add Staking Pool to MinichiefV2
+
+> This script deploy `MockRewarder` and add new Pool in `MinichiefV2` smart contract. You can access the source code of [MockRewarder](https://mumbai.polygonscan.com/address/0xFd36ac240FCec7dFE439f47caf5f464EBadAd6f0#code) 
+
+To Add Liquidity to Pool you need to add these variables to `.env`:
+
+```
+MINICHIEF_ADDRESS=//address of the MinichiefV2 at choose network
+LP_TOKEN_ADDRESS=//address of ERC20 to be staked
+REWARDER_TOKEN_ADDRESS=//address of ERC20 to be rewarded
+REWARDER_MULTIPLIER=//number used in reward calculation(see full contract)
+```
+
+And then run:
+
+```
+$ npm run add-pool
+```
+
+The hash of Add Liquidity transaction will be show in the output:
+
+```
+[add-pool] start
+[add-pool] Rewarder contract deployed address:  0xFd36ac240FCec7dFE439f47caf5f464EBadAd6f0
+[add-pool] add 0x561B18f3293e6D7e722Bac493dC015650D2A1C22 token pool tx:  0xfd9d276b480347d3a306c8eb492097f9bbbd01b12072b4d958723b5d6b23e814
+[add-pool] done
+```
+
+### Others
+
+#### Deploy and mint ERC20
+
+> If you need to create fresh ERC20 tokens for test run this script that create a new ERC20 token called `SCT`. See the source code [here](https://github.com/solid-world/solid-world-dao-contracts)
 
 You can set the `AMOUNT_TO_MINT` to deployer wallet at `.env` file:
 
@@ -118,7 +182,6 @@ The address of ERC 20 token will be show in the output:
 [deploy-erc20] 1000000000000000000000000 SCT ERC20 tokens minted
 [deploy-erc20] done
 ```
-
 
 ## More Info
 
