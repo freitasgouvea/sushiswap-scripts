@@ -7,8 +7,12 @@
     "add-liquidity": "node scripts/add-liquidity.js",
     "create-pair": "node scripts/create-pair.js",
     "deploy-erc20": "node scripts/deploy-erc20.js",
-    "deploy-minichief": "node scripts/deploy-minichief.js",
-    "add-pool": "node scripts/add-pool.js"
+    "deploy-minichef": "node scripts/deploy-minichef.js",
+    "add-pool": "node scripts/add-pool.js",
+    "deposit-pool": "node scripts/deposit-pool.js",
+    "info-pool": "node scripts/info-pool.js",
+    "update-pool": "node scripts/update-pool.js",
+    "withdraw-pool": "node scripts/withdraw-pool.js"
   },
   "repository": {
     "type": "git",

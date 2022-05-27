@@ -10,17 +10,17 @@ const password = process.env.ACCOUNT_PASSWORD
 const accountFile = require('../account.json')
 
 // ABI and bytecodes
-const miniChiefAbi = require('../abi/minichiefv2.abi.json')
+const minichefAbi = require('../abi/minichefv2.abi.json')
 const rewarderAbi = require('../abi/rewarder.abi.json')
 const rewarderBytecode = require('../abi/rewarder.bytecode.json')
 
 // Script params
-const miniChiefAddress = process.env.MINICHIEF_ADDRESS
+const minichefAddress = process.env.MINICHEF_ADDRESS
 const rewarderTokenAddress = process.env.REWARDER_TOKEN_ADDRESS
-const rewarderMultiplier = process.env.REWARDER_MULTIPLIER || 1
+const rewarderMultiplier = process.env.REWARDER_MULTIPLIER
 const lpTokenAddress = process.env.LP_TOKEN_ADDRESS
+const alocPoint = process.env.LP_ALOC_POINT
 let rewarderContractAddress
-let alocPoint
 
 runAddPool()
 
@@ -28,8 +28,8 @@ async function runAddPool () {
   try {
     console.log('[add-pool] start')
 
-    if (!miniChiefAddress) {
-      console.log('[add-pool] error: MINICHIEF_ADDRESS null')
+    if (!minichefAddress) {
+      console.log('[add-pool] error: MINICHEF_ADDRESS null')
       return
     }
 
@@ -38,8 +38,18 @@ async function runAddPool () {
       return
     }
 
+    if (!rewarderMultiplier) {
+      console.log('[add-pool] error: REWARDER_MULTIPLIER null')
+      return
+    }
+
     if (!lpTokenAddress) {
       console.log('[add-pool] error: LP_TOKEN_ADDRESS null')
+      return
+    }
+
+    if (!alocPoint) {
+      console.log('[add-pool] error: LP_ALOC_POINT null')
       return
     }
 
@@ -51,20 +61,21 @@ async function runAddPool () {
     const rewarderContractDeployed = await rewarderContract.deploy(
       rewarderMultiplier,
       rewarderTokenAddress,
-      miniChiefAddress
+      minichefAddress
     )
     rewarderContractAddress = rewarderContractDeployed.address
     console.log('[add-pool] Rewarder contract deployed address: ', rewarderContractAddress)
 
-    const miniChiefContract = new ethers.Contract(miniChiefAddress, miniChiefAbi, account)
-    alocPoint = await miniChiefContract.totalAllocPoint() + 1
-    const addPool = await miniChiefContract.add(
+    const minichefContract = new ethers.Contract(minichefAddress, minichefAbi, account)
+    const poolLength = await minichefContract.poolLength()
+    const poolId = poolLength - 1
+    const addPool = await minichefContract.add(
       alocPoint,
       lpTokenAddress,
       rewarderContractAddress
     )
     const addPoolReceipt = await addPool.wait()
-    console.log(`[add-pool] add ${lpTokenAddress} token pool tx: `, addPoolReceipt.transactionHash)
+    console.log(`[add-pool] create ${lpTokenAddress} token pool ${poolId} tx: `, addPoolReceipt.transactionHash)
 
     console.log('[add-pool] done')
   } catch (error) {

@@ -38,8 +38,12 @@ You can see all avaiable `.env` variables used for execute the scripts at `.env.
 
 * Create Sushiswap Pair
 * Add Liquidity to Pair
-* Deploy MinichiefV2 staking smart contract
-* Add Staking Pool to MinichiefV2
+* Deploy Sushi Token and MiniChefV2 smart contracts
+* Add Staking Pool to MiniChefV2
+* Deposit LP Token to MiniChefV2 Pool
+* Withdraw LP Token and Rewards from MiniChefV2 Pool
+* Update MiniChefV2 Pool
+* Get MiniChefV2 Pool and User Info
 * Deploy and Mint ERC20 tokens
 
 ### Sushiswap Liquidity Pool and Swap
@@ -107,37 +111,45 @@ The hash of Add Liquidity transaction will be show in the output:
 
 ### Sushiswap Staking and Reward
 
-#### Deploy Sushi Token and MinichiefV2
+#### Deploy Sushi Token and MiniChefV2
 
-> This script deploy `SushiToken` ERC20, `MinichiefV2` staking smart contract and transfer SushiToken ownership to MinichiefV2. Access the source code of [SushiToken](https://mumbai.polygonscan.com/address/0xD4Cf135a3C1bEdeB071a1db2e9baae1362222549#code) and [MinichiefV2](https://mumbai.polygonscan.com/address/0x69AE6689BE6E279eBFd4dAeC527a56C128005098#code) 
+> This script deploy `SushiToken` ERC20, `MiniChefV2` staking smart contract, transfer SushiToken ownership to MiniChefV2 and set SushiToken to be distributed per second. Access the source code of [SushiToken](https://mumbai.polygonscan.com/address/0xE5AB03080C57DA1C80719C43895929E165aF6919#code) and [MiniChefV2](https://mumbai.polygonscan.com/address/0x8937d3bcD72b9CE937762252a186Abc8552F34aa#code) 
 
-To execute this script run:
+To deploy MiniChefV2 you need to add this variable to `.env`:
 
 ```
-$ npm run deploy-minichief
+MINICHEF_SUSHI_PER_SECOND=//amount of Sushi to be distributed per second
+```
+
+And execute this script:
+
+```
+$ npm run deploy-minichef
 ```
 
 The addresses of both smart contracts will be show in the output:
 
 ```
-[deploy-minichief] start
-[deploy-minichief] Sushi ERC20 token contract deployed address:  0xD4Cf135a3C1bEdeB071a1db2e9baae1362222549
-[deploy-minichief] Mini Chief V2 contract deployed address:  0x69AE6689BE6E279eBFd4dAeC527a56C128005098
-[deploy-minichief] Sushi ERC20 token ownership transfered tx: 0xd675c49c8ca8222158dcb1e8a6a9c6d5dd269eb45b5383b18234bc644f1e0f48
-[deploy-minichief] done
+[deploy-minichef] start
+[deploy-minichef] Sushi ERC20 token contract deployed address:  0xE5AB03080C57DA1C80719C43895929E165aF6919
+[deploy-minichef] Mini chef V2 contract deployed address:  0x8937d3bcD72b9CE937762252a186Abc8552F34aa
+[deploy-minichef] Sushi ERC20 token ownership transfered tx: 0xddaba9026900d836fe567103be278cb9fc50c8c45523b4f48c199518d7fc8675
+[deploy-minichef] Mini chef V2 set sushi per second tx: 0x8e3316e8862e4183297b4d85846838556bf48d0cde56f295b8586dc56c0a3cb4
+[deploy-minichef] done
 ```
 
-#### Add Staking Pool to MinichiefV2
+#### Add Staking Pool to MiniChefV2
 
-> This script deploy `MockRewarder` and add new Pool in `MinichiefV2` smart contract. You can access the source code of [MockRewarder](https://mumbai.polygonscan.com/address/0xFd36ac240FCec7dFE439f47caf5f464EBadAd6f0#code) 
+> This script deploy `MockRewarder` and add new Pool to `MiniChefV2` smart contract. You can access the source code of [MockRewarder](https://mumbai.polygonscan.com/address/0x91257CF6BfFbBf30171DF2bEa04013c101A90Ab0#code) 
 
 To Add Liquidity to Pool you need to add these variables to `.env`:
 
 ```
-MINICHIEF_ADDRESS=//address of the MinichiefV2 at choose network
+MINICHEF_ADDRESS=//address of the MiniChefV2 at choose network
 LP_TOKEN_ADDRESS=//address of ERC20 to be staked
 REWARDER_TOKEN_ADDRESS=//address of ERC20 to be rewarded
 REWARDER_MULTIPLIER=//number used in reward calculation(see full contract)
+LP_ALOC_POINT=//amount of reward to distribute per block
 ```
 
 And then run:
@@ -146,13 +158,115 @@ And then run:
 $ npm run add-pool
 ```
 
-The hash of Add Liquidity transaction will be show in the output:
+The hash of Add Pool transaction will be show in the output:
 
 ```
 [add-pool] start
-[add-pool] Rewarder contract deployed address:  0xFd36ac240FCec7dFE439f47caf5f464EBadAd6f0
-[add-pool] add 0x561B18f3293e6D7e722Bac493dC015650D2A1C22 token pool tx:  0xfd9d276b480347d3a306c8eb492097f9bbbd01b12072b4d958723b5d6b23e814
+[add-pool] Rewarder contract deployed address:  0x91257CF6BfFbBf30171DF2bEa04013c101A90Ab0
+[add-pool] create 0x285D8Fb65ffeaD1De9992C9D45F4bf66D3a0BB87 token pool 0 tx:  0x5dbb4d66eaa24eb1807be6e837a70a5b1822cd5c1a17ee17958bfaea24ef1413
 [add-pool] done
+```
+
+#### Deposit LP Token to MiniChefV2 Pool
+
+> This script deposit LP tokens to `MiniChefV2` smart contract pool. You can access the source code of [MiniChefV2](https://mumbai.polygonscan.com/address/0x8937d3bcD72b9CE937762252a186Abc8552F34aa#code)
+
+To deposit Liquidity Token to Pool you need to set these variables to `.env`:
+
+```
+MINICHEF_ADDRESS=//address of the MiniChefV2 at choose network
+DEPOSIT_POOL_ID=//MiniChefV2 pool id 
+DEPOSIT_POOL_AMOUNT=//amount of LP tokens to deposit 
+```
+
+And then run:
+
+```
+$ npm run deposit-pool
+```
+
+The hash of deposit transaction will be show in the output:
+
+```
+[deposit-pool] start
+[deposit-pool] minichef spend LP token approved
+[deposit-pool] deposit 1000000000 of 0x285D8Fb65ffeaD1De9992C9D45F4bf66D3a0BB87 tokens to pool 0 tx:  0x4864e9fdd1da84570aa81242d7fdae37a962f9f779ea0794dc2740875037e927
+[deposit-pool] done
+```
+
+#### Withdraw LP Token and Rewards from MiniChefV2 Pool
+
+> This script withdraw LP tokens from `MiniChefV2` smart contract pool. You can access the source code of [MiniChefV2](https://mumbai.polygonscan.com/address/0x8937d3bcD72b9CE937762252a186Abc8552F34aa#code)
+
+To withdraw Liquidity Tokens from pool and recieve Reward Tokens you need to set these variables to `.env`:
+
+```
+MINICHEF_ADDRESS=//address of the MiniChefV2 at choose network
+WITHDRAW_POOL_ID=//MiniChefV2 pool id 
+WITHDRAW_POOL_AMOUNT=//amount of LP tokens to withdraw 
+```
+
+And then run:
+
+```
+$ npm run withdraw-pool
+```
+
+The hash of withdraw transaction will be show in the output:
+
+```
+[withdraw-pool] start
+[withdraw-pool] withdraw 1000000000 of 0x285D8Fb65ffeaD1De9992C9D45F4bf66D3a0BB87 tokens from pool 0 tx:  0xaa02ae60802249fa69f100787c67dcf27bf794aed4a3e5f649a2184f8ef4b9f1
+[withdraw-pool] done
+```
+
+#### Update MiniChefV2 Pool
+
+> This script update `MiniChefV2` smart contract pool. When update happens the amount of reward is updated. You can access the source code of [MiniChefV2](https://mumbai.polygonscan.com/address/0x8937d3bcD72b9CE937762252a186Abc8552F34aa#code)
+
+To update Pool you need to set these variables to `.env`:
+
+```
+MINICHEF_ADDRESS=//address of the MiniChefV2 at choose network
+UPDATE_POOL_ID=//MiniChefV2 pool id 
+```
+
+And then run:
+
+```
+$ npm run update-pool
+```
+
+The hash of update transaction will be show in the output:
+
+```
+[update-pool] start
+[update-pool] Pool 0 update tx:  0xd816ce55518b741cf1ffc83dc37270a3f2df14bfb10aeb94b0e659b82b5ad45e
+[update-pool] done
+```
+
+#### Get MiniChefV2 Pool and User Info
+
+> This script get `MiniChefV2` smart contract pool and user info. You can access the source code of [MiniChefV2](https://mumbai.polygonscan.com/address/0x8937d3bcD72b9CE937762252a186Abc8552F34aa#code)
+
+To execute this script you need to set these variables to `.env`:
+
+```
+MINICHEF_ADDRESS=//address of the MiniChefV2 at choose network
+INFO_POOL_ID=//MiniChefV2 pool id 
+```
+
+And then run:
+
+```
+$ npm run info-pool
+```
+
+The info will be show in the output:
+
+```
+[info-pool] Pool 0 info:  { accSushiPerShare: '140000000000000000000000', lastRewardBlock: '1653679863', allocPoint: '1000' }
+[info-pool] User Pool 0 info:  { amount: '1000000000', rewardDebt: '5000' }
 ```
 
 ### Others
@@ -164,7 +278,7 @@ The hash of Add Liquidity transaction will be show in the output:
 You can set the `AMOUNT_TO_MINT` to deployer wallet at `.env` file:
 
 ```
-AMOUNT_TO_MINT=1000000000000000000000000
+AMOUNT_TO_MINT="1000000000000000000000000"
 ```
 
 And create ERC20 token:
@@ -178,8 +292,8 @@ The address of ERC 20 token will be show in the output:
 ```
 [deploy-erc20] start
 [deploy-erc20] SCT ERC20 management contract deployed
-[deploy-erc20] SCT ERC20 token contract deployed address:  0x6F9b800B5DD3d4e348776059Bb7Af850d316bDd5
-[deploy-erc20] 1000000000000000000000000 SCT ERC20 tokens minted
+[deploy-erc20] SCT ERC20 token contract deployed address:  0x285D8Fb65ffeaD1De9992C9D45F4bf66D3a0BB87
+[deploy-erc20] 1000000000000000000 SCT ERC20 tokens minted
 [deploy-erc20] done
 ```
 

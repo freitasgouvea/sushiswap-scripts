@@ -16,7 +16,7 @@ const sctTokenAbi = require('../abi/scttoken.abi.json')
 const sctTokenBytecode = require('../abi/scttoken.bytecode.json')
 
 // Script params
-const amountToMint = process.env.AMOUNT_TO_MINT || 1000000000000000
+const amountToMint = process.env.AMOUNT_TO_MINT || '1000000000000000000000000'
 
 runDeployErc20()
 

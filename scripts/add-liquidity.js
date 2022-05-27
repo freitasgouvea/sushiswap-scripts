@@ -17,12 +17,12 @@ const sushiswapAbi = require('../abi/sushiswap.abi.json')
 const sushiswapAddress = process.env.SUSHI_SWAP_ADDRESS
 const tokenAAddress = process.env.TOKEN_A_ADDRESS
 const tokenBAddress = process.env.TOKEN_B_ADDRESS
-const amountAddTokenA = process.env.ADD_AMOUNT_TOKEN_A || 1000000000000000
-const amountAddTokenB = process.env.ADD_AMOUNT_TOKEN_B || 1000000000000000
-const amountDesiredTokenA = process.env.ADD_AMOUNT_DESIRED_TOKEN_A || 1000000000000000
-const amountDesiredTokenB = process.env.ADD_AMOUNT_DESIRED_TOKEN_B || 1000000000000000
-const amountMinimunTokenA = process.env.ADD_AMOUNT_MINIMUM_TOKEN_A || 1000000000000000
-const amountMinimumTokenB = process.env.ADD_AMOUNT_MINIMUM_TOKEN_B || 1000000000000000
+const amountAddTokenA = process.env.ADD_AMOUNT_TOKEN_A || '1000000000000000'
+const amountAddTokenB = process.env.ADD_AMOUNT_TOKEN_B || '1000000000000000'
+const amountDesiredTokenA = process.env.ADD_AMOUNT_DESIRED_TOKEN_A || '1000000000000000'
+const amountDesiredTokenB = process.env.ADD_AMOUNT_DESIRED_TOKEN_B || '1000000000000000'
+const amountMinimunTokenA = process.env.ADD_AMOUNT_MINIMUM_TOKEN_A || '1000000000000000'
+const amountMinimumTokenB = process.env.ADD_AMOUNT_MINIMUM_TOKEN_B || '1000000000000000'
 const deadline = process.env.ADD_DEADLINE || Math.floor(Date.now() / 1000) + 2629743
 
 runAddLiquidity()
