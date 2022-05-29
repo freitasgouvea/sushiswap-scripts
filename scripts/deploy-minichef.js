@@ -16,8 +16,8 @@ const miniChefAbi = require('../abi/minichefv2.abi.json')
 const miniChefBytecode = require('../abi/minichefv2.bytecode.json')
 
 //
-const sushiPerSeconds = process.env.MINICHEF_SUSHI_PER_SECOND || '1000000000000000000'
-
+const sushiPerSeconds = process.env.MINICHEF_SUSHI_PER_SECOND || '1000'
+const amountToMint = process.env.MINICHEF_SUSHI_AMOUNT_TO_MINT || '1000000000000000000000000'
 runDeployMiniChef()
 
 async function runDeployMiniChef () {
@@ -36,7 +36,11 @@ async function runDeployMiniChef () {
     const miniChefContract = new ethers.ContractFactory(miniChefAbi, miniChefBytecode, account)
     const miniChefContractDeployed = await miniChefContract.deploy(sushiTokenAddress)
     const miniChefAddress = miniChefContractDeployed.address
-    console.log('[deploy-minichef] Mini chef V2 contract deployed address: ', miniChefAddress)
+    console.log('[deploy-minichef] MinichefV2 contract deployed address: ', miniChefAddress)
+
+    const mintSushiToMinichef = await sushiTokenContractDeployed.mint(miniChefAddress, amountToMint)
+    const mintSushiToMinichefReceipt = await mintSushiToMinichef.wait()
+    console.log(`[deploy-minichef] Sushi ERC20 token minted to MinichefV2 tx: ${mintSushiToMinichefReceipt.transactionHash}`)
 
     const transferSushiOwnership = await sushiTokenContractDeployed.transferOwnership(miniChefAddress)
     const transferSushiOwnershipReceipt = await transferSushiOwnership.wait()
@@ -44,7 +48,7 @@ async function runDeployMiniChef () {
 
     const setSushiPerSecond = await miniChefContractDeployed.setSushiPerSecond(sushiPerSeconds)
     const setSushiPerSecondReceipt = await setSushiPerSecond.wait()
-    console.log(`[deploy-minichef] Mini chef V2 set sushi per second tx: ${setSushiPerSecondReceipt.transactionHash}`)
+    console.log(`[deploy-minichef] MinichefV2 set sushi per second tx: ${setSushiPerSecondReceipt.transactionHash}`)
 
     console.log('[deploy-minichef] done')
   } catch (error) {

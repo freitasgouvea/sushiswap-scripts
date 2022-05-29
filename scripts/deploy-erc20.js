@@ -39,8 +39,8 @@ async function runDeployErc20 () {
     console.log('[deploy-erc20] SCT ERC20 token contract deployed address: ', sctTokenContractDeployed.address)
 
     const mintSctERC20 = await sctTokenContractDeployed.mint(wallet.address, amountToMint)
-    await mintSctERC20.wait()
-    console.log(`[deploy-erc20] ${amountToMint} SCT ERC20 tokens minted`)
+    const mintSctERC20Receipt = await mintSctERC20.wait()
+    console.log(`[deploy-erc20] ${amountToMint} SCT ERC20 tokens minted tx: `, mintSctERC20Receipt.transactionHash)
 
     console.log('[deploy-erc20] done')
   } catch (error) {

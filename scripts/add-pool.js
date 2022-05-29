@@ -10,6 +10,7 @@ const password = process.env.ACCOUNT_PASSWORD
 const accountFile = require('../account.json')
 
 // ABI and bytecodes
+const sctTokenAbi = require('../abi/scttoken.abi.json')
 const minichefAbi = require('../abi/minichefv2.abi.json')
 const rewarderAbi = require('../abi/rewarder.abi.json')
 const rewarderBytecode = require('../abi/rewarder.bytecode.json')
@@ -17,6 +18,7 @@ const rewarderBytecode = require('../abi/rewarder.bytecode.json')
 // Script params
 const minichefAddress = process.env.MINICHEF_ADDRESS
 const rewarderTokenAddress = process.env.REWARDER_TOKEN_ADDRESS
+const amountToMint = process.env.REWARDER_AMOUNT_TO_MINT || '1000000000000000000000000'
 const rewarderMultiplier = process.env.REWARDER_MULTIPLIER
 const lpTokenAddress = process.env.LP_TOKEN_ADDRESS
 const alocPoint = process.env.LP_ALOC_POINT
@@ -66,9 +68,13 @@ async function runAddPool () {
     rewarderContractAddress = rewarderContractDeployed.address
     console.log('[add-pool] Rewarder contract deployed address: ', rewarderContractAddress)
 
+    const sctErc20Contract = new ethers.Contract(rewarderTokenAddress, sctTokenAbi, account)
+    const mintSctERC20 = await sctErc20Contract.mint(rewarderContractAddress, amountToMint)
+    await mintSctERC20.wait()
+    console.log(`[add-pool] ${amountToMint} reward tokens minted to rewarder contract`)
+
     const minichefContract = new ethers.Contract(minichefAddress, minichefAbi, account)
-    const poolLength = await minichefContract.poolLength()
-    const poolId = poolLength - 1
+    const poolId = await minichefContract.poolLength()
     const addPool = await minichefContract.add(
       alocPoint,
       lpTokenAddress,

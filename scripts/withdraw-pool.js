@@ -41,7 +41,7 @@ async function runWithdrawPool () {
     const account = wallet.connect(provider)
 
     const minichefContract = new ethers.Contract(minichefAddress, minichefAbi, account)
-    const withdrawPool = await minichefContract.withdraw(
+    const withdrawPool = await minichefContract.withdrawAndHarvest(
       poolId,
       amount,
       wallet.address
